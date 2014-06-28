@@ -1,0 +1,104 @@
+CREATE TABLE ne_user (
+ id BIGSERIAL NOT NULL PRIMARY KEY,
+ type_user integer,
+ name_user  VARCHAR(100),
+ login_user  VARCHAR(20),
+ password_user VARCHAR(20)
+ );
+ 
+ALTER TABLE ne_user ALTER COLUMN id SET DEFAULT NEXTVAL('ne_user_id_seq'::regclass);
+
+CREATE TABLE ne_player (
+ id BIGSERIAL NOT NULL PRIMARY KEY,
+ fk_user BIGSERIAL,
+ gender VARCHAR(10),
+ date_of_birth DATE
+);
+ 
+ALTER TABLE ne_player ALTER COLUMN id SET DEFAULT NEXTVAL('ne_player_id_seq'::regclass);
+
+ALTER TABLE ne_player
+ADD CONSTRAINT fk_user
+FOREIGN KEY (fk_user) REFERENCES ne_user (id)
+ON UPDATE CASCADE;
+
+CREATE TABLE ne_school (
+ id BIGSERIAL NOT NULL PRIMARY KEY,
+ title VARCHAR(255),
+ city  VARCHAR(200),
+ state  VARCHAR(50)
+);
+
+ALTER TABLE ne_school ALTER COLUMN id SET DEFAULT NEXTVAL('ne_school_id_seq'::regclass);
+
+CREATE TABLE ne_player_school (
+ id BIGSERIAL NOT NULL PRIMARY KEY,
+ year_classe INT,
+ classe INT,
+ fk_player  BIGSERIAL,
+ fk_school  BIGSERIAL
+);
+
+ALTER TABLE ne_player_school ALTER COLUMN id SET DEFAULT NEXTVAL('ne_player_school_id_seq'::regclass);
+
+ALTER TABLE ne_player_school
+ADD CONSTRAINT fk_player
+FOREIGN KEY (fk_player) REFERENCES ne_player (id)
+ON UPDATE CASCADE;
+
+ALTER TABLE ne_player_school
+ADD CONSTRAINT fk_school
+FOREIGN KEY (fk_school) REFERENCES ne_player (id)
+ON UPDATE CASCADE;
+
+CREATE TABLE ne_question(
+ id BIGSERIAL NOT NULL PRIMARY KEY,
+ type_question INT,
+ hability VARCHAR(255),
+ asking VARCHAR(255),
+ level INT
+);
+
+ALTER TABLE ne_player_school ALTER COLUMN id SET DEFAULT NEXTVAL('ne_player_school_id_seq'::regclass);
+
+CREATE TABLE ne_game(
+ id BIGSERIAL NOT NULL PRIMARY KEY,
+ date_game DATE,
+ is_correct_answer BOOLEAN,
+ fk_player_school BIGSERIAL,
+ fk_question_game BIGSERIAL
+);
+
+ALTER TABLE ne_game ALTER COLUMN id SET DEFAULT NEXTVAL('ne_game_id_seq'::regclass);
+
+CREATE TABLE ne_answer(
+ id BIGSERIAL NOT NULL PRIMARY KEY,
+ type_answer VARCHAR(100),
+ response VARCHAR(255),
+ picture VARCHAR(255),
+ audio VARCHAR(255),
+ is_correct BOOLEAN,
+ fk_question_answer BIGSERIAL
+);
+
+ALTER TABLE ne_answer ALTER COLUMN id SET DEFAULT NEXTVAL('ne_answer_id_seq'::regclass);
+
+ALTER TABLE ne_answer
+ADD CONSTRAINT fk_question_answer
+FOREIGN KEY (fk_question_answer) REFERENCES ne_question (id)
+ON UPDATE CASCADE;
+
+ALTER TABLE ne_game
+ADD CONSTRAINT fk_player_school
+FOREIGN KEY (fk_player_school) REFERENCES ne_player_school (id)
+ON UPDATE CASCADE;
+
+ALTER TABLE ne_game
+ADD CONSTRAINT fk_question_game
+FOREIGN KEY (fk_question_game) REFERENCES ne_question (id)
+ON UPDATE CASCADE;
+
+
+commit;
+
+	
